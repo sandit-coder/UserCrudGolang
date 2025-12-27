@@ -1,0 +1,31 @@
+package repositories
+
+import (
+	"UserCrud/internal/app/domain/entities"
+	"context"
+	"database/sql"
+	"errors"
+	"fmt"
+
+	"github.com/google/uuid"
+)
+
+func (repo *UserRepository) GetById(ctx context.Context, id uuid.UUID) (*entities.User, error) {
+	query := "SELECT id, first_name, last_name, email FROM users WHERE id = $1"
+
+	var user entities.User
+
+	if err := repo.db.QueryRowContext(ctx, query, id).Scan(
+		&user.ID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+	); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return &entities.User{}, fmt.Errorf("user with id %d not found", id)
+		}
+		return &entities.User{}, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	return &user, nil
+}
