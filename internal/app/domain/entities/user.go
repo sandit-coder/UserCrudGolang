@@ -8,3 +8,12 @@ type User struct {
 	FirstName string
 	LastName  string
 }
+
+func NewUser(id uuid.UUID, email string, firstName string, lastName string) *User {
+	return &User{
+		ID:        id,
+		Email:     email,
+		FirstName: firstName,
+		LastName:  lastName,
+	}
+}

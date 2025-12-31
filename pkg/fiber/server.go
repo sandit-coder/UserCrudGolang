@@ -1,6 +1,7 @@
 package server
 
 import (
+	error_handler "UserCrud/internal/app/adapters/primary/http-adapter/erros"
 	"UserCrud/internal/app/config"
 	"context"
 	"log"
@@ -11,6 +12,7 @@ import (
 
 func NewFiberApp(cfg *config.FiberConfig) *fiber.App {
 	app := fiber.New(fiber.Config{
+		ErrorHandler: error_handler.ErrorHandler,
 		ReadTimeout:  cfg.ReadTimeout,
 		WriteTimeout: cfg.WriteTimeout,
 		IdleTimeout:  cfg.IdleTimeout,

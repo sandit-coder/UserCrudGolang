@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"UserCrud/internal/app/domain/entities"
+	"UserCrud/internal/app/domain/errors"
 	"context"
 	"database/sql"
 	"errors"
@@ -22,9 +23,9 @@ func (repo *UserRepository) GetById(ctx context.Context, id uuid.UUID) (*entitie
 		&user.Email,
 	); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return &entities.User{}, fmt.Errorf("user with id %d not found", id)
+			return nil, apperrors.ErrNotFound
 		}
-		return &entities.User{}, fmt.Errorf("failed to get user: %w", err)
+		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
 
 	return &user, nil
