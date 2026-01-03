@@ -10,6 +10,7 @@ import (
 func main() {
 	fx.New(
 		di.ConfigModule,
+		di.ValidatorModule,
 		di.LoggerModule,
 		di.PostgresModule,
 		di.FiberModule,

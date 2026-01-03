@@ -1,15 +1,16 @@
 package di
 
 import (
-	middleware "UserCrud/internal/app/adapters/middlwaries"
-	handlers "UserCrud/internal/app/adapters/primary/http-adapter/handlers/user"
-	"UserCrud/internal/app/adapters/primary/http-adapter/router"
-	repositories "UserCrud/internal/app/adapters/secondary/repositories/user"
-	"UserCrud/internal/app/application/services"
-	"UserCrud/internal/app/config"
-	server "UserCrud/pkg/fiber"
-	"UserCrud/pkg/logger"
-	"UserCrud/pkg/postgres"
+	middleware "UserCrud/internal/User/adapters/middlwaries"
+	handlers "UserCrud/internal/User/adapters/primary/http-adapter/handlers/user"
+	"UserCrud/internal/User/adapters/primary/http-adapter/router"
+	repositories "UserCrud/internal/User/adapters/secondary/repositories/user"
+	"UserCrud/internal/User/config"
+	"UserCrud/internal/User/infrastructure/fiber"
+	"UserCrud/internal/User/infrastructure/logger"
+	"UserCrud/internal/User/infrastructure/postgres"
+	"UserCrud/internal/User/infrastructure/validator"
+	"UserCrud/internal/User/usecase/services/user"
 
 	"go.uber.org/fx"
 )
@@ -27,7 +28,7 @@ var RepositoryModule = fx.Module("repository",
 
 var ServiceModule = fx.Module("service",
 	fx.Provide(
-		services.NewUserService,
+		user.NewService,
 	))
 
 var HandlerModule = fx.Module("handler",
@@ -48,12 +49,18 @@ var LoggerModule = fx.Module("logger",
 		logger.NewLogger,
 	))
 
+var ValidatorModule = fx.Module("validator",
+	fx.Provide(
+		validator.NewValidator,
+		validator.NewFiberValidator,
+	))
+
 var MiddlewareModule = fx.Module(
 	"middleware",
 	fx.Provide(
 		middleware.NewSlogMiddleware,
 	),
-	fx.Invoke(middleware.RegisterMiddleware))
+	fx.Invoke(middleware.Register))
 
 var RouterModule = fx.Module("router",
 	fx.Invoke(
